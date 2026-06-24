@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BanglaMemo — Handwritten Bangla Receipt Dataset</title>
+
+    <!-- Reveal.js from CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --accent: #6C63FF;
+            --accent-light: #8B83FF;
+            --accent-glow: rgba(108, 99, 255, 0.3);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --bg-dark: #0B0E17;
+            --bg-card: rgba(255, 255, 255, 0.04);
+            --bg-card-hover: rgba(255, 255, 255, 0.08);
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+        }
+
+        .reveal {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        /* Override reveal defaults */
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: none;
+            letter-spacing: -0.02em;
+            text-align: left;
+        }
+
+        .reveal h1 { font-size: 2.8em; font-weight: 900; line-height: 1.1; }
+        .reveal h2 { font-size: 1.6em; font-weight: 800; margin-bottom: 0.4em; }
+        .reveal h3 { font-size: 1.05em; font-weight: 600; color: var(--accent-light); }
+
+        .reveal p, .reveal li {
+            font-size: 0.65em;
+            line-height: 1.55;
+            color: var(--text-secondary);
+        }
+
+        .reveal ul { list-style: none; padding-left: 0; }
+        .reveal ul li {
+            padding: 0.15em 0;
+            padding-left: 1.4em;
+            position: relative;
+        }
+        .reveal ul li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ─── Background ─── */
+        .reveal .slides section {
+            background: var(--bg-dark);
+        }
+
+        .reveal .slide-background {
+            background: var(--bg-dark) !important;
+        }
+
+        /* ─── Title Slide ─── */
+        .title-slide {
+            text-align: center !important;
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title-slide h1 {
+            text-align: center;
+            background: linear-gradient(135deg, #6C63FF 0%, #C084FC 50%, #F472B6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 3.2em;
+            margin-bottom: 0.15em;
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.1em;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-bottom: 1.8em;
+            text-align: center;
+        }
+
+        .title-slide .meta {
+            font-size: 0.65em;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .title-slide .meta span {
+            display: inline-block;
+            margin: 0 1em;
+        }
+
+        /* ─── Section Dividers ─── */
+        .section-slide {
+            text-align: center !important;
+        }
+
+        .section-slide h2 {
+            text-align: center;
+            font-size: 2.4em;
+            background: linear-gradient(135deg, var(--accent) 0%, #C084FC 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-slide .section-number {
+            font-size: 5em;
+            font-weight: 900;
+            color: rgba(108, 99, 255, 0.1);
+            margin-bottom: -0.5em;
+            text-align: center;
+        }
+
+        /* ─── Cards ─── */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 0.7em 1em;
+            margin: 0.3em 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5em;
+            margin-top: 0.4em;
+        }
+
+        .card-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.5em;
+            margin-top: 0.4em;
+        }
+
+        .card h4 {
+            font-size: 0.65em;
+            color: var(--accent-light);
+            margin: 0 0 0.2em 0;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .card p {
+            font-size: 0.55em;
+            margin: 0;
+        }
+
+        /* ─── Stats ─── */
+        .stat {
+            text-align: center;
+            padding: 1em;
+        }
+
+        .stat .number {
+            font-size: 2.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent) 0%, #C084FC 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            line-height: 1.2;
+        }
+
+        .stat .label {
+            font-size: 0.55em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        /* ─── Tables ─── */
+        .reveal table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.6em;
+            margin: 0.6em 0;
+        }
+
+        .reveal table thead th {
+            background: rgba(108, 99, 255, 0.15);
+            color: var(--accent-light);
+            font-weight: 600;
+            padding: 0.7em 1em;
+            text-align: left;
+            border: none;
+            font-size: 0.95em;
+        }
+
+        .reveal table tbody td {
+            padding: 0.6em 1em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+
+        .reveal table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .reveal table tbody tr:hover td {
+            background: var(--bg-card-hover);
+        }
+
+        /* ─── Tags / Badges ─── */
+        .badge {
+            display: inline-block;
+            padding: 0.15em 0.6em;
+            border-radius: 20px;
+            font-size: 0.55em;
+            font-weight: 600;
+            margin: 0.15em;
+        }
+
+        .badge-accent { background: rgba(108, 99, 255, 0.2); color: var(--accent-light); }
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: #34D399; }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: #FBBF24; }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: #F87171; }
+
+        /* ─── Image Styling ─── */
+        .img-showcase {
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            max-height: 280px;
+            object-fit: contain;
+        }
+
+        .img-comparison {
+            display: flex;
+            gap: 0.8em;
+            align-items: center;
+            justify-content: center;
+            margin-top: 0.6em;
+        }
+
+        .img-comparison .img-label {
+            text-align: center;
+        }
+
+        .img-comparison .img-label img {
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 160px;
+            object-fit: contain;
+        }
+
+        .img-comparison .img-label p {
+            font-size: 0.55em;
+            color: var(--text-muted);
+            margin-top: 0.4em;
+        }
+
+        .arrow-between {
+            font-size: 1.5em;
+            color: var(--accent);
+        }
+
+        /* ─── Pipeline Steps ─── */
+        .pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.2em;
+            margin: 0.5em 0;
+        }
+
+        .pipeline-step {
+            background: var(--bg-card);
+            border: 1px solid rgba(108, 99, 255, 0.3);
+            border-radius: 10px;
+            padding: 0.4em 0.7em;
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .pipeline-step .step-icon {
+            font-size: 1.2em;
+            display: block;
+            margin-bottom: 0.1em;
+        }
+
+        .pipeline-step .step-name {
+            font-size: 0.45em;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .pipeline-step .step-detail {
+            font-size: 0.35em;
+            color: var(--text-muted);
+        }
+
+        .pipeline-arrow {
+            font-size: 1em;
+            color: var(--accent);
+        }
+
+        /* ─── Highlight box ─── */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(192, 132, 252, 0.05));
+            border-left: 3px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            padding: 0.5em 1em;
+            margin: 0.4em 0;
+        }
+
+        .highlight-box p {
+            font-size: 0.62em;
+            color: var(--text-primary);
+            font-style: italic;
+        }
+
+        /* ─── Bangla text styling ─── */
+        .bangla {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            font-weight: 600;
+            color: var(--accent-light);
+        }
+
+        /* ─── Code ─── */
+        .reveal code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(108, 99, 255, 0.1);
+            padding: 0.1em 0.4em;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: var(--accent-light);
+        }
+
+        /* ─── Two-column layout ─── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5em;
+            align-items: start;
+        }
+
+        .two-col-60-40 {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 1.5em;
+            align-items: start;
+        }
+
+        /* ─── Progress dots ─── */
+        .reveal .progress {
+            color: var(--accent);
+        }
+
+        .reveal .controls button {
+            color: var(--accent);
+        }
+
+        /* ─── Footer ─── */
+        .slide-footer {
+            position: absolute;
+            bottom: 1em;
+            left: 1.5em;
+            font-size: 0.4em;
+            color: var(--text-muted);
+        }
+
+        /* ─── Animated gradient border ─── */
+        .glow-card {
+            position: relative;
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.2em 1.5em;
+            overflow: hidden;
+        }
+
+        .glow-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            background: linear-gradient(135deg, var(--accent), #C084FC, #F472B6, var(--accent));
+            border-radius: 13px;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        /* ─── Check list ─── */
+        .check-list li::before {
+            content: '✓';
+            color: var(--success);
+        }
+
+        .cross-list li::before {
+            content: '✗';
+            color: var(--danger);
+        }
+
+        /* ─── Flow chart ─── */
+        .flow-horizontal {
+            display: flex;
+            align-items: center;
+            gap: 0.15em;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .flow-box {
+            background: var(--bg-card);
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.35em 0.6em;
+            text-align: center;
+        }
+
+        .flow-box .flow-num {
+            font-size: 0.45em;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .flow-box .flow-label {
+            font-size: 0.45em;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .flow-arrow {
+            color: var(--accent);
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 1: TITLE
+                 ═══════════════════════════════════════════════════════════ -->
+            <section class="title-slide">
+                <h1>BanglaMemo</h1>
+                <p class="subtitle">A Handwritten Bangla Receipt Dataset<br>for OCR-Based Expense Tracking</p>
+                <div class="meta">
+                    <span>Digital Image Processing</span>
+                    <span>•</span>
+                    <span>June 2026</span>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 2: THE PROBLEM
+                 ═══════════════════════════════════════════════════════════ -->
+            <section>
+                <h2>The Problem</h2>
+                <div class="two-col-60-40">
+                    <div>
+                        <div class="highlight-box">
+                            <p>"Millions of retail transactions in Bangladesh rely on handwritten paper receipts — yet no OCR system can read them."</p>
+                        </div>
+                        <ul>
+                            <li>Clothing bazaars, grocery stores, and street markets still use handwritten receipts</li>
+                            <li>Receipts feature messy, informal Bangla handwriting</li>
+                            <li>Mixed scripts: Bangla + English + Bangla numerals</li>
+                            <li>No existing dataset captures this real-world messiness</li>
+                        </ul>
+                    </div>
+                    <div style="text-align: center;">
+                        <img src="images/raw_receipt.jpg" class="img-showcase" alt="Sample receipt" style="max-height: 350px; transform: rotate(-2deg);">
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 3: THE GAP
+                 ═══════════════════════════════════════════════════════════ -->
+            <section>
+                <h2>The Gap in Existing Datasets</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dataset</th>
+                            <th>Type</th>
+                            <th>Size</th>
+                            <th>Limitation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>BanglaLekha-Isolated</td>
+                            <td>Isolated characters</td>
+                            <td>166K</td>
+                            <td><span class="badge badge-danger">No word context</span></td>
+                        </tr>
+                        <tr>
+                            <td>CMATERdb</td>
+                            <td>Characters & words</td>
+                            <td>15K+</td>
+                            <td><span class="badge badge-danger">Controlled conditions</span></td>
+                        </tr>
+                        <tr>
+                            <td>BN-HTRd</td>
+                            <td>Handwritten lines</td>
+                            <td>1K pages</td>
+                            <td><span class="badge badge-danger">Formal writing only</span></td>
+                        </tr>
+                        <tr>
+                            <td>CORD / SROIE</td>
+                            <td>Receipts</td>
+                            <td>11K / 1K</td>
+                            <td><span class="badge badge-danger">Printed, non-Bangla</span></td>
+                        </tr>
+                        <tr style="background: rgba(108, 99, 255, 0.08);">
+                            <td style="color: var(--accent-light); font-weight: 700;">BanglaMemo (Ours)</td>
+                            <td style="color: var(--text-primary);">Full receipt documents</td>
+                            <td style="color: var(--text-primary);">698</td>
+                            <td><span class="badge badge-success">Real marketplace receipts</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="highlight-box" style="margin-top: 0.8em;">
+                    <p>BanglaMemo is the first dataset specifically targeting handwritten Bangla receipts from informal retail settings.</p>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 4: OBJECTIVES
+                 ═══════════════════════════════════════════════════════════ -->
+            <section>
+                <h2>Project Objectives</h2>
+                <div class="card-grid" style="margin-top: 1em;">
+                    <div class="card">
+                        <h4>📸 Data Collection</h4>
+                        <p>Collect 698 real handwritten receipt images from local Dhaka marketplaces</p>
+                    </div>
+                    <div class="card">
+                        <h4>🏷️ Annotation</h4>
+                        <p>Label receipts with structured bounding boxes and Bangla transcriptions using Label Studio</p>
+                    </div>
+                    <div class="card">
+                        <h4>⚙️ Processing Pipeline</h4>
+                        <p>Build automated tools for cleaning, cropping, augmentation, and quality assurance</p>
+                    </div>
+                    <div class="card">
+                        <h4>📦 PaddleOCR-Ready Output</h4>
+                        <p>Produce a properly formatted, split, and augmented dataset ready for OCR fine-tuning</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 5: SECTION — METHODOLOGY
+                 ═══════════════════════════════════════════════════════════ -->
+            <section class="section-slide">
+                <div class="section-number">02</div>
+                <h2>Methodology</h2>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 6: DATA COLLECTION
+                 ═══════════════════════════════════════════════════════════ -->
+            <section>
+                <h2>Data Collection</h2>
+                <div class="two-col-60-40">
+                    <div>
+                        <h3>698 Receipt Images</h3>
+                        <ul>
+                            <li>Sourced from local marketplaces in Dhaka</li>
+                            <li>Clothing/textile bazaars (receipts 001–356)</li>
+                            <li>Grocery/daily necessities stores (receipts 357–698)</li>
+                            <li>Captured with smartphone cameras under natural conditions</li>
+                        </ul>
+                        <div class="card" style="margin-top: 0.3em;">
+                            <h4>Real-World Variability Preserved</h4>
+                            <p>Lighting, angles, paper colors, handwriting styles — all captured as-is.</p>
+                        </div>
+                    </div>
+                    <div style="text-align: center;">
+                        <img src="images/raw_receipt2.jpg" class="img-showcase" alt="Sample receipt 2" style="max-height: 300px; transform: rotate(1deg);">
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 7: ANNOTATION
+                 ═══════════════════════════════════════════════════════════ -->
+            <section>
+                <h2>Annotation with Label Studio</h2>
+                <div class="two-col">
+                    <div>
+                        <ul>
+                            <li>3 annotators using Label Studio</li>
+                            <li>Bounding boxes + Bangla transcriptions</li>
+                            <li>622 receipts fully labeled</li>
+                            <li>76 excluded (illegible or printed)</li>
+                        </ul>
+                        <table style="margin-top: 0.5em;">
+                            <thead>
+                                <tr><th>Label</th><th>Example</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Store_Name</td><td><span class="bangla">মুফ্তি টেক্স</span></td></tr>
+                                <tr><td>Item_Name</td><td><span class="bangla">জর্জেট প্রিন্ট কুচি হেজাব</span></td></tr>
+                                <tr><td>Quantity</td><td><span class="bangla">৮ ps</span></td></tr>
+                                <tr><td>Item_Price</td><td><span class="bangla">৪৬০</span></td></tr>
+                                <tr><td>Total_Amount</td><td><span class="bangla">৮৭৬০</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="text-align: center; display: flex; flex-direction: column; gap: 0.6em; align-items: center;">
+                        <div>
+                            <img src="images/cropped_items2.jpg" class="img-showcase" alt="Cropped items" style="max-height: 130px;">
+                            <p style="font-size: 0.5em; color: var(--text-muted); margin-top: 0.3em;">Items region crop</p>
+                        </div>
+                        <div>
+                            <img src="images/original_total.jpg" class="img-showcase" alt="Total crop" style="max-height: 100px;">
+                            <p style="font-size: 0.5em; color: var(--text-muted); margin-top: 0.3em;">Total amount crop</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 8: PROCESSING PIPELINE
+                 ═══════════════════════════════════════════════════════════ -->
+            <section>
+                <h2>3-Stage Processing Pipeline</h2>
+                <div class="pipeline">
+                    <div class="pipeline-step">
+                        <span class="step-icon">📋</span>
+                        <span class="step-name">Stage 1</span>
+                        <span class="step-detail">CSV Merge & Validate</span>
+                    </div>
+                    <span class="pipeline-arrow">→</span>
+                    <div class="pipeline-step">
+                        <span class="step-icon">✂️</span>
+                        <span class="step-name">Stage 2</span>
+                        <span class="step-detail">Clean, Crop & Format</span>
+                    </div>
+                    <span class="pipeline-arrow">→</span>
+                    <div class="pipeline-step">
+                        <span class="step-icon">🔄</span>
+                        <span class="step-name">Stage 3</span>
+                        <span class="step-detail">Augment & Split</span>
+                    </div>
+                    <span class="pipeline-arrow">→</span>
+                    <div class="pipeline-step" style="border-color: rgba(16, 185, 129, 0.5);">
+                        <span class="step-icon">✅</span>
+                        <span class="step-name">Output</span>
+                        <span class="step-detail">PaddleOCR Dataset</span>
+                    </div>
+                </div>
+
+                <div class="card-grid" style="margin-top: 0.4em;">
+                    <div class="card">
+                        <h4>Stage 1 — validate_and_merge.py</h4>
+                        <p>Merged 6 CSV exports from 3 annotators. Resolved schema inconsistencies (<code>ocr</code> vs <code>image</code> column names).</p>
+                    </div>
+                    <div class="card">
+                        <h4>Stage 2 — prepare_dataset.py</h4>
+                        <p>EXIF rotation fix, transcription cleaning, mislabel detection, region cropping with padding.</p>
+                    </div>
+                    <div class="card">
+                        <h4>Stage 3 — augment_dataset.py</h4>
+                        <p>Receipt-level train/val/test split, 4× augmentation on training set, PaddleOCR label generation.</p>
+                    </div>
+                    <div class="card">
+                        <h4>Integrity Verification</h4>
+                        <p>Automated checks: all paths exist, no data leakage, no empty transcriptions. 0 errors.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 9: CHALLENGES
+                 ═══════════════════════════════════════════════════════════ -->
+            <section>
+                <h2>Challenges & Solutions</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Challenge</th>
+                            <th>Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Heterogeneous CSV exports</td>
+                            <td>Automated schema detection & normalization</td>
+                        </tr>
+                        <tr>
+                            <td>Corrupted JSON in transcriptions</td>
+                            <td>Type-based filtering (<code>isinstance(item, str)</code>)</td>
+                        </tr>
+                        <tr>
+                            <td>File extension mismatch (.jpg/.jpeg)</td>
+                            <td>Dual-extension fallback search</td>
+                        </tr>
+                        <tr>
+                            <td>EXIF rotation mismatch</td>
+                            <td><code>ImageOps.exif_transpose()</code> before cropping</td>
+                        </tr>
+                        <tr>
+                            <td>Store names labeled as items</td>
+                            <td>Statistical outlier detection (y-position + gap heuristic)</td>
+                        </tr>
+                        <tr>
+                            <td>Limited dataset size (622)</td>
+                            <td>4× data augmentation with 9 techniques</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 10: MISLABEL DETECTION
+                 ═══════════════════════════════════════════════════════════ -->
+            <section>
+                <h2>Automated Mislabel Detection</h2>
+                <div class="two-col">
+                    <div>
+                        <h3>The Problem</h3>
+                        <p>9 receipts had store names (e.g., <span class="bangla">"মুফ্তি টেক্স"</span>) labeled as <code>Item_Name</code> instead of <code>Store_Name</code>.</p>
+                        <p>This caused item crops to include the entire store header — up to 60% extra image area.</p>
+
+                        <h3 style="margin-top: 0.8em;">The Fix</h3>
+                        <ul class="check-list">
+                            <li>Detect Item_Name boxes in the top 20% of the image</li>
+                            <li>Check if gap to the next item cluster > 15%</li>
+                            <li>Reclassify as Store_Name automatically</li>
+                            <li>9 receipts corrected, 0 false positives</li>
+                        </ul>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="card" style="padding: 1em;">
+                            <h4 style="text-align: center;">Outlier Detection Heuristic</h4>
+                            <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 1em; margin-top: 0.5em; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 0.5em; color: var(--text-secondary); line-height: 1.8;">
+                                <span style="color: #F472B6;">if</span> bbox.y < <span style="color: #FBBF24;">0.20</span> × image_height:<br>
+                                &nbsp;&nbsp;<span style="color: #64748B;"># In top 20% zone</span><br>
+                                &nbsp;&nbsp;gap = next_item.y - bbox.bottom<br>
+                                &nbsp;&nbsp;<span style="color: #F472B6;">if</span> gap > <span style="color: #FBBF24;">0.15</span> × image_height:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #64748B;"># Spatial gap confirms mislabel</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;reclassify → <span style="color: #34D399;">Store_Name</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 11: SECTION — AUGMENTATION
+                 ═══════════════════════════════════════════════════════════ -->
+            <section class="section-slide">
+                <div class="section-number">03</div>
+                <h2>Data Augmentation</h2>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 12: AUGMENTATION TECHNIQUES
+                 ═══════════════════════════════════════════════════════════ -->
+            <section>
+                <h2>9 Augmentation Techniques</h2>
+                <div class="card-grid-3">
+                    <div class="card">
+                        <h4>☀️ Brightness</h4>
+                        <p>±20% variation — different lighting</p>
+                    </div>
+                    <div class="card">
+                        <h4>🔲 Contrast</h4>
+                        <p>±20% variation — camera exposure</p>
+                    </div>
+                    <div class="card">
+                        <h4>↻ Rotation</h4>
+                        <p>±3° — tilted receipt photos</p>
+                    </div>
+                    <div class="card">
+                        <h4>📡 Gaussian Noise</h4>
+                        <p>σ 5–15 — camera sensor noise</p>
+                    </div>
+                    <div class="card">
+                        <h4>🔍 Gaussian Blur</h4>
+                        <p>0.5–1.5px radius — slight defocus</p>
+                    </div>
+                    <div class="card">
+                        <h4>📐 Perspective Warp</h4>
+                        <p>±2% — angled photography</p>
+                    </div>
+                    <div class="card">
+                        <h4>📸 JPEG Compression</h4>
+                        <p>Quality 50–85 — compression artifacts</p>
+                    </div>
+                    <div class="card" style="border-color: rgba(108, 99, 255, 0.4);">
+                        <h4>📄 Paper Crumpling</h4>
+                        <p>Elastic sine-wave deformation — folded/creased paper</p>
+                    </div>
+                    <div class="card" style="border-color: rgba(108, 99, 255, 0.4);">
+                        <h4>🖊️ Ink Smudging</h4>
+                        <p>Selective directional motion blur on ink regions</p>
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 0.6em; font-size: 0.6em; color: var(--text-muted);">
+                    Each image gets <strong style="color: var(--accent-light);">4 augmented copies</strong> with random combinations of 2–3 techniques. Applied to <strong style="color: var(--accent-light);">training set only</strong>.
+                </p>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 13: AUGMENTATION VISUAL
+                 ═══════════════════════════════════════════════════════════ -->
+            <section>
+                <h2>Augmentation Results</h2>
+                <div style="text-align: center;">
+                    <div style="display: flex; justify-content: center; gap: 0.5em; flex-wrap: wrap;">
+                        <div class="img-label">
+                            <img src="images/original_items.jpg" class="img-showcase" alt="Original" style="max-height: 140px; max-width: 280px;">
+                            <p style="font-size: 0.5em; color: var(--success); margin-top: 0.3em; text-align: center;">Original</p>
+                        </div>
+                        <div class="img-label">
+                            <img src="images/aug_smudge.jpg" class="img-showcase" alt="Smudge" style="max-height: 140px; max-width: 280px;">
+                            <p style="font-size: 0.5em; color: var(--accent-light); margin-top: 0.3em; text-align: center;">+ Ink Smudge</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 0.5em; flex-wrap: wrap; margin-top: 0.5em;">
+                        <div class="img-label">
+                            <img src="images/aug_crumple.jpg" class="img-showcase" alt="Crumple" style="max-height: 140px; max-width: 280px;">
+                            <p style="font-size: 0.5em; color: var(--warning); margin-top: 0.3em; text-align: center;">+ Paper Crumple + Perspective</p>
+                        </div>
+                        <div class="img-label">
+                            <img src="images/aug_noise.jpg" class="img-showcase" alt="Noise" style="max-height: 140px; max-width: 280px;">
+                            <p style="font-size: 0.5em; color: var(--danger); margin-top: 0.3em; text-align: center;">+ Noise + Rotation</p>
+                        </div>
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 0.5em; font-size: 0.58em; color: var(--text-muted);">
+                    Text remains <strong style="color: var(--success);">fully readable</strong> in all variants — the OCR learns to handle degradation, not guess at destroyed text.
+                </p>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 14: SECTION — RESULTS
+                 ═══════════════════════════════════════════════════════════ -->
+            <section class="section-slide">
+                <div class="section-number">04</div>
+                <h2>Final Dataset</h2>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 15: FINAL NUMBERS
+                 ═══════════════════════════════════════════════════════════ -->
+            <section>
+                <h2>Dataset Statistics</h2>
+                <div style="display: flex; justify-content: space-around; margin: 0.3em 0 0.4em;">
+                    <div class="stat" style="padding: 0.4em;">
+                        <span class="number" style="font-size: 2em;">5,361</span>
+                        <span class="label">Total Images</span>
+                    </div>
+                    <div class="stat" style="padding: 0.4em;">
+                        <span class="number" style="font-size: 2em;">622</span>
+                        <span class="label">Labeled Receipts</span>
+                    </div>
+                    <div class="stat" style="padding: 0.4em;">
+                        <span class="number" style="font-size: 2em;">138</span>
+                        <span class="label">Unique Characters</span>
+                    </div>
+                    <div class="stat" style="padding: 0.4em;">
+                        <span class="number" style="font-size: 2em;">0</span>
+                        <span class="label">Integrity Errors</span>
+                    </div>
+                </div>
+
+                <table style="margin-top: 0.2em;">
+                    <thead>
+                        <tr>
+                            <th>Split</th>
+                            <th>Receipts</th>
+                            <th>Items Crops</th>
+                            <th>Total Crops</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-accent">Train</span></td>
+                            <td>528</td>
+                            <td>2,640</td>
+                            <td>2,535</td>
+                            <td style="font-size: 0.85em;">Original + 4× augmented</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-warning">Val</span></td>
+                            <td>62</td>
+                            <td>62</td>
+                            <td>60</td>
+                            <td style="font-size: 0.85em;">Originals only</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-danger">Test</span></td>
+                            <td>32</td>
+                            <td>32</td>
+                            <td>32</td>
+                            <td style="font-size: 0.85em;">Originals only</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p style="font-size: 0.55em; color: var(--text-muted); margin-top: 0.4em; text-align: center;">
+                    Split by receipt ID — <strong style="color: var(--success);">zero data leakage</strong> between sets. Augmentation on training set only for honest evaluation metrics.
+                </p>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 16: FUTURE WORK
+                 ═══════════════════════════════════════════════════════════ -->
+            <section>
+                <h2>Future Work</h2>
+                <div class="flow-horizontal" style="margin-bottom: 0.8em;">
+                    <div class="flow-box" style="border-color: rgba(16, 185, 129, 0.5);">
+                        <div class="flow-num">Phase 1 ✓</div>
+                        <div class="flow-label">Dataset</div>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box">
+                        <div class="flow-num">Phase 2</div>
+                        <div class="flow-label">Scale to 2K+</div>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box">
+                        <div class="flow-num">Phase 3</div>
+                        <div class="flow-label">OCR Training</div>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box">
+                        <div class="flow-num">Phase 4</div>
+                        <div class="flow-label">LLM Post-Processing</div>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box">
+                        <div class="flow-num">Phase 5</div>
+                        <div class="flow-label">Mobile App</div>
+                    </div>
+                </div>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>📊 Dataset Expansion</h4>
+                        <p>Collect 1,000–1,500 more receipts. Use VLM (Qwen2.5-VL-7B) for semi-automated annotation to accelerate labeling.</p>
+                    </div>
+                    <div class="card">
+                        <h4>🤖 PaddleOCR Fine-Tuning</h4>
+                        <p>Fine-tune PP-OCRv4 detection and recognition models on this dataset.</p>
+                    </div>
+                    <div class="card">
+                        <h4>🧠 LLM Post-Processing</h4>
+                        <p>Lightweight LLM to correct OCR errors and structure extracted text into item–quantity–price tuples.</p>
+                    </div>
+                    <div class="card">
+                        <h4>📱 Expense Tracking App</h4>
+                        <p>Mobile app: capture receipt → OCR → LLM → automatic expense records with analytics.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SLIDE 17: THANK YOU
+                 ═══════════════════════════════════════════════════════════ -->
+            <section class="title-slide">
+                <h1 style="font-size: 2.6em;">Thank You</h1>
+                <p class="subtitle" style="margin-bottom: 1em;">Questions?</p>
+                <div class="card" style="display: inline-block; padding: 1em 2em;">
+                    <p style="margin: 0; text-align: center; font-size: 0.65em;">
+                        <span class="bangla" style="font-size: 1.3em;">বাংলামেমো</span><br>
+                        <span style="color: var(--text-muted);">698 receipts · 622 labeled · 5,361 images · 138 characters</span>
+                    </p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: 'c/t',
+            width: 1280,
+            height: 720,
+            margin: 0.08,
+            transition: 'slide',
+            transitionSpeed: 'default',
+            backgroundTransition: 'fade',
+            center: false,
+            controls: true,
+            progress: true,
+            history: true,
+        });
+    </script>
+</body>
+</html>

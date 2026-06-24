@@ -1,0 +1,76 @@
+============================================================
+BANGLA RECEIPT OCR DATASET — FINAL REPORT
+============================================================
+
+DATASET OVERVIEW
+----------------------------------------
+Original labeled receipts:       622
+Original total crops:            599
+Empty transcriptions removed:    0
+Augmentation factor:             4× (training only)
+
+SPLIT DISTRIBUTION
+----------------------------------------
+Split        Receipts    Items Crops    Total Crops
+Train             528           2640           2535
+Val                62             62             60
+Test               32             32             32
+TOTAL             622           2734           2627
+
+  (Train includes original + augmented; Val/Test are originals only)
+
+AUGMENTATION TECHNIQUES
+----------------------------------------
+Applied to training set in random combinations:
+  • Brightness adjustment (±20%)
+  • Contrast adjustment (±20%)
+  • Slight rotation (±3°)
+  • Gaussian noise (σ = 5–15)
+  • Gaussian blur (radius 0.5–1.5)
+  • Perspective warp (±2%)
+  • JPEG compression artifacts (quality 50–85)
+  • Paper crumpling/folding (multi-level: 3–10px waves + fold lines)
+  • Ink smudging (kernel 5–13px, motion blur + ink bleeding/spread)
+
+  Note: Crumple and smudge are mutually exclusive per image to
+  prevent over-distortion while maintaining text readability.
+
+CHARACTER DICTIONARY
+----------------------------------------
+Unique characters:               138
+
+PADDLEOCR FORMAT
+----------------------------------------
+Label format: <relative_image_path>\t<transcription>
+Label files per split:
+  train/rec_items_train.txt, train/rec_total_train.txt
+  val/rec_items_val.txt, val/rec_total_val.txt
+  test/rec_items_test.txt, test/rec_total_test.txt
+
+INTEGRITY
+----------------------------------------
+Verification errors:             0
+Data leakage:                    None
+
+DIRECTORY STRUCTURE
+----------------------------------------
+Dataset_PaddleOCR/
+├── train/
+│   ├── items_crops/          (originals + augmented)
+│   ├── total_crops/          (originals + augmented)
+│   ├── rec_items_train.txt
+│   └── rec_total_train.txt
+├── val/
+│   ├── items_crops/          (originals only)
+│   ├── total_crops/          (originals only)
+│   ├── rec_items_val.txt
+│   └── rec_total_val.txt
+├── test/
+│   ├── items_crops/          (originals only)
+│   ├── total_crops/          (originals only)
+│   ├── rec_items_test.txt
+│   └── rec_total_test.txt
+├── char_dictionary.txt
+└── dataset_report.txt
+
+============================================================

@@ -1,0 +1,26 @@
+# Virtual environments
+.venv/
+ls-env/
+
+# Raw receipt images (3GB — not needed for PaddleOCR)
+Receipts_Processed/
+
+# Intermediate dataset (superseded by Dataset_PaddleOCR)
+Dataset_Final/
+
+# Local test artifacts
+augment_comparison/
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
