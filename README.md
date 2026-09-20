@@ -72,7 +72,7 @@ BanglaMemo/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/maybe456/BanglaMemo.git
+git clone https://github.com/SaminYeaserKhan/BanglaMemo.git
 cd BanglaMemo
 ```
 
