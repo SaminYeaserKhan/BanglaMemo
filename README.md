@@ -18,7 +18,7 @@ Three crops from the test split with their labels:
 
 | Crop | Label |
 |:---|:---|
-| <img src="Dataset_PaddleOCR/test/items_crops/receipt_394_items.jpg" width="360" alt="Handwritten item lines from receipt 394"> | মাইলাভ ট্রিটজার ১p ১p ১৬০ ৩০০ |
+| <img src="Dataset_PaddleOCR/test/items_crops/receipt_394_items.jpg" width="360" alt="Handwritten item lines from receipt 394"> | মাইলাভ ১p ১৬০ ট্রিটজার ১p ৩০০ |
 | <img src="Dataset_PaddleOCR/test/items_crops/receipt_169_items.jpg" width="360" alt="Handwritten item line from receipt 169"> | পার্ট হিজাব ক্লেমার সাদা ১২ ৩৪০ |
 | <img src="Dataset_PaddleOCR/test/total_crops/receipt_007_total.jpg" width="140" alt="Handwritten total from receipt 7"> | ২৯০০০ |
 
