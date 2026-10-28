@@ -1,16 +1,14 @@
 # BanglaMemo: A Handwritten Bangla Receipt Dataset for OCR-Based Expense Tracking
 
-**Course:** Digital Image Processing  
-**Semester:** [Your Semester/Year]  
-**Team Members:** [Your Names]  
-**Supervisor:** [Supervisor Name]  
+**Course:** Digital Image Processing, United International University  
+**Team:** three students, including Samin Yeaser Khan  
 **Date:** June 2026
 
 ---
 
 ## Abstract
 
-This report presents **BanglaMemo**, a novel dataset of 698 handwritten Bangla receipt images, collected, annotated, and processed for training Optical Character Recognition (OCR) systems. The dataset addresses a critical gap in Bangla handwriting recognition research: the absence of domain-specific, real-world receipt data with messy, informal handwriting. We collected receipt images from local marketplaces in Dhaka, annotated them using Label Studio with bounding boxes and Bangla transcriptions, and developed an automated pipeline for data cleaning, cropping, augmentation, and PaddleOCR-compatible formatting. The final dataset contains 622 fully labeled receipts with 3,110 augmented training samples, split into train/validation/test sets with no data leakage. The dataset includes 143 unique characters spanning Bangla script, Bangla digits, Latin characters, and special symbols. This work establishes a foundation for building a complete Bangla receipt OCR system for mobile expense tracking applications.
+This report presents **BanglaMemo**, a novel dataset of 698 handwritten Bangla receipt images, collected, annotated, and processed for training Optical Character Recognition (OCR) systems. The dataset addresses a critical gap in Bangla handwriting recognition research: the absence of domain-specific, real-world receipt data with messy, informal handwriting. We collected receipt images from local marketplaces in Dhaka, annotated them using Label Studio with bounding boxes and Bangla transcriptions, and developed an automated pipeline for data cleaning, cropping, augmentation, and PaddleOCR-compatible formatting. The final dataset contains 622 fully labeled receipts, split into train/validation/test sets with no data leakage; 4× augmentation of the training split yields 5,175 cropped training samples. The dataset includes 138 unique characters spanning Bangla script, Bangla digits, Latin characters, and special symbols. This work establishes a foundation for building a complete Bangla receipt OCR system for mobile expense tracking applications.
 
 ---
 
@@ -142,11 +140,12 @@ This script processes the merged CSV and generates the cropped dataset:
    - **Items region:** Union bounding box from the first `Item_Name` to the last `Item_Price`, with 2% padding
    - **Total Amount:** Separate crop of the `Total_Amount` bounding box, with 5% padding
 
-6. **Character Dictionary Generation:** Extracted 143 unique characters across all transcriptions:
-   - 66 Bangla characters (consonants, vowels, conjuncts)
-   - 10 Bangla/Arabic digits
-   - 47 Latin characters (for English brand names)
-   - 34 symbols and spaces
+6. **Character Dictionary Generation:** Extracted 138 unique characters across all transcriptions:
+   - 54 Bangla letters, vowel signs and other Bangla marks
+   - 10 Bangla digits
+   - 10 Latin digits
+   - 46 Latin letters (for English brand names and units such as kg)
+   - 18 symbols, including the space
 
 #### Stage 3: Augmentation and Finalization (`augment_dataset.py`)
 
@@ -167,8 +166,10 @@ The final stage prepares the dataset for PaddleOCR fine-tuning:
    - Gaussian blur (radius 0.5–1.5)
    - Perspective warp (±2%)
    - JPEG compression artifacts (quality 50–85)
+   - Paper crumpling and folding (3–10 px waves plus fold lines)
+   - Ink smudging (5–13 px kernel, motion blur and ink bleed)
 
-   These augmentations simulate real-world capture variability without destroying text readability. Destructive augmentations (flips, heavy rotation, cutout) were intentionally excluded.
+   Crumpling and smudging are never applied to the same image, so text stays readable. These augmentations simulate real-world capture variability without destroying text readability. Destructive augmentations (flips, heavy rotation, cutout) were intentionally excluded.
 
 4. **PaddleOCR Formatting:** Generated label files in the required `<image_path>\t<transcription>` format, with relative paths within each split directory.
 
@@ -194,7 +195,7 @@ The pipeline includes automated integrity checks:
 | Excluded (illegible/printed) | 76 |
 | Items region crops | 622 |
 | Total amount crops | 599 (after cleaning) |
-| Character dictionary size | 143 |
+| Character dictionary size | 138 |
 | Corrupted entries fixed | 19 |
 | Mislabeled entries corrected | 9 |
 | Empty transcriptions removed | 2 |
@@ -237,7 +238,7 @@ Dataset_PaddleOCR/
 │   ├── total_crops/          # Original total images only
 │   ├── rec_items_test.txt
 │   └── rec_total_test.txt
-├── char_dictionary.txt       # 143 unique characters
+├── char_dictionary.txt       # 138 unique characters
 └── dataset_report.txt        # Automated statistics report
 ```
 

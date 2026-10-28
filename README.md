@@ -12,6 +12,25 @@ BanglaMemo addresses a critical gap in Bangla handwriting recognition research �
 - Environmental noise (creases, smudges, colored backgrounds)
 - Bangla numerals mixed with Arabic numerals
 
+## A look at the data
+
+Three crops from the test split with their labels:
+
+| Crop | Label |
+|:---|:---|
+| <img src="Dataset_PaddleOCR/test/items_crops/receipt_394_items.jpg" width="360" alt="Handwritten item lines from receipt 394"> | মাইলাভ ট্রিটজার ১p ১p ১৬০ ৩০০ |
+| <img src="Dataset_PaddleOCR/test/items_crops/receipt_169_items.jpg" width="360" alt="Handwritten item line from receipt 169"> | পার্ট হিজাব ক্লেমার সাদা ১২ ৩৪০ |
+| <img src="Dataset_PaddleOCR/test/total_crops/receipt_007_total.jpg" width="140" alt="Handwritten total from receipt 7"> | ২৯০০০ |
+
+The same item crop before and after two of the augmentations:
+
+| Original | Paper crumple | Ink smudge |
+|:---:|:---:|:---:|
+| <img src="docs/images/original_items.jpg" width="260" alt="Original item crop"> | <img src="docs/images/aug_crumple.jpg" width="260" alt="Item crop with a simulated paper crumple"> | <img src="docs/images/aug_smudge.jpg" width="260" alt="Item crop with a simulated ink smudge"> |
+
+The project slides are in [`docs/index.html`](docs/index.html), viewable at
+https://saminyeaserkhan.github.io/BanglaMemo/ once GitHub Pages is turned on.
+
 ## Dataset Statistics
 
 | Metric | Count |
@@ -55,7 +74,7 @@ BanglaMemo/
 │   └── dataset_report.txt       Full dataset statistics
 │
 ├── Labeled_CSV/                 Raw annotation CSVs from Label Studio
-├── presentation/                Project presentation (HTML)
+├── docs/                        Project slides (HTML) and images, for GitHub Pages
 │
 ├── prepare_dataset.py           Step 1: Clean, crop, and format labels
 ├── validate_and_merge.py        Merge and validate Label Studio exports
@@ -158,9 +177,12 @@ The dataset was built using a 3-stage pipeline:
 2. **`prepare_dataset.py`** — Cleans corrupted transcriptions, crops item regions and total amounts from full receipt images, generates character dictionary
 3. **`augment_dataset.py`** — Splits into train/val/test (85/10/5%), applies 4× augmentation to training set, produces PaddleOCR-formatted label files
 
-## Course
+## Team
 
-Digital Image Processing — June 2026
+Built by a team of three for the Digital Image Processing course at United International
+University, June 2026. The team collected and annotated the receipts together;
+[Samin Yeaser Khan](https://github.com/SaminYeaserKhan) wrote the processing pipeline
+(`validate_and_merge.py`, `prepare_dataset.py` and `augment_dataset.py`).
 
 ## License
 
